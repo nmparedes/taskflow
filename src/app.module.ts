@@ -8,6 +8,8 @@ import { User } from './user/entity/user.entity';
 import { Task } from './task/entity/task.entity';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { LogModule } from './log/log.module';
+import { Log } from './log/entity/log.entity';
 
 @Module({
   imports: [
@@ -19,12 +21,13 @@ import { ConfigModule } from '@nestjs/config';
       username: 'root',
       password: 'root',
       database: 'taskflow',
-      entities: [User, Task],
+      entities: [User, Task, Log],
       synchronize: true,
     }),
     UserModule,
     TaskModule,
     AuthModule,
+    LogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

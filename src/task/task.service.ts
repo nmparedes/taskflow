@@ -10,12 +10,14 @@ import { CreateTaskDTO } from './dto/create-task.dto';
 import { User } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/helpers/enums/user-role.enum';
 import { UpdateTaskDTO } from './dto/update-task.dto';
+import { LogService } from 'src/log/log.service';
 
 @Injectable()
 export class TaskService {
   constructor(
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
+    private readonly logService: LogService,
   ) {}
 
   async findAll(user: User): Promise<Task[]> {
@@ -38,7 +40,15 @@ export class TaskService {
 
   async create(createTaskDTO: CreateTaskDTO, user: User): Promise<Task> {
     const task = this.taskRepository.create({ ...createTaskDTO, user });
-    return this.taskRepository.save(task);
+    const savedTask = await this.taskRepository.save(task);
+    await this.logService.createLog(
+      'CREATE',
+      'Task',
+      savedTask.id,
+      user.id,
+      createTaskDTO,
+    );
+    return savedTask;
   }
 
   async update(
@@ -48,11 +58,20 @@ export class TaskService {
   ): Promise<Task> {
     const task = await this.findOne(id, user.id);
     Object.assign(task, updateTaskDTO);
-    return this.taskRepository.save(task);
+    const updatedTask = await this.taskRepository.save(task);
+    await this.logService.createLog(
+      'UPDATE',
+      'Task',
+      updatedTask.id,
+      user.id,
+      updateTaskDTO,
+    );
+    return updatedTask;
   }
 
   async delete(id: string, user: User): Promise<void> {
     const task = await this.findOne(id, user.id);
     await this.taskRepository.remove(task);
+    await this.logService.createLog('DELETE', 'Task', id, user.id);
   }
 }
