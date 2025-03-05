@@ -6,10 +6,10 @@ import {
 import { Repository } from 'typeorm';
 import { Task } from './entity/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateTaskDTO } from './dto/create-task.dto';
+import { CreateTaskDTO } from '../dto/create-task.dto';
 import { User } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/helpers/enums/user-role.enum';
-import { UpdateTaskDTO } from './dto/update-task.dto';
+import { UpdateTaskDTO } from '../dto/update-task.dto';
 import { LogService } from 'src/log/log.service';
 
 @Injectable()
